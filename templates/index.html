@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Помощник Рентгенлаборанта</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Шапка -->
+        <div class="header">
+            <h1>Сбор Анамнеза</h1>
+            <div class="header-controls">
+                <button id="undoBtn" class="btn-icon" title="Отменить (Ctrl+Z)" disabled>↶</button>
+                <button id="redoBtn" class="btn-icon" title="Повторить (Ctrl+Y)" disabled>↷</button>
+                <button id="settingsBtn" class="btn-icon" title="Настройки">⚙</button>
+            </div>
+        </div>
+
+        <!-- Модальное окно настроек -->
+        <div id="settingsModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Настройки приложения</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <label for="apiKey">OpenRouter API Key:</label>
+                    <div class="input-group">
+                        <input type="password" id="apiKey" placeholder="Введите API ключ">
+                        <button id="pasteBtn" class="btn-secondary">Вставить</button>
+                    </div>
+                    <button id="saveApiKey" class="btn-primary">Сохранить и закрыть</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Секция: Анамнез -->
+        <div class="section">
+            <h2>Анамнез</h2>
+            
+            <label for="complaints">Жалобы:</label>
+            <div class="input-group">
+                <textarea id="complaints" rows="4" placeholder="Введите жалобы пациента"></textarea>
+                <button id="clearComplaints" class="btn-clear">×</button>
+            </div>
+            
+            <div class="button-row">
+                <button id="improveBtn" class="btn-primary">✨ Улучшить (AI)</button>
+                <button id="noComplaintsBtn" class="btn-primary">Жалоб нет</button>
+            </div>
+
+            <label for="trauma">Травмы:</label>
+            <select id="trauma">
+                <option>Нет</option>
+                <option>Бытовая</option>
+                <option>Спортивная</option>
+                <option>ДТП</option>
+                <option>Уличная</option>
+                <option>Производственная</option>
+            </select>
+
+            <label for="operations">Операции / импланты:</label>
+            <select id="operations">
+                <option>Нет</option>
+                <option>В анамнезе</option>
+                <option>Металлоконструкции</option>
+                <option>Кардиостимулятор</option>
+                <option>Стентирование</option>
+            </select>
+
+            <div id="operationsDetailBlock" style="display: none;">
+                <label for="operationsDetail">Уточните вмешательство:</label>
+                <input type="text" id="operationsDetail" placeholder="Например: артроскопия коленного сустава">
+            </div>
+
+            <label for="contrast">Аллергия на контраст:</label>
+            <select id="contrast">
+                <option>Нет</option>
+                <option>Есть</option>
+                <option>Неизвестно</option>
+            </select>
+
+            <label for="pregnancy">Беременность (для женщин):</label>
+            <select id="pregnancy">
+                <option>Не актуально</option>
+                <option>Отрицает</option>
+                <option>Возможна</option>
+                <option>Подтверждена</option>
+            </select>
+
+            <label for="extra">Особенности / риски:</label>
+            <input type="text" id="extra" placeholder="Например: бронхиальная астма, диабет">
+        </div>
+
+        <!-- Секция: Подготовка -->
+        <div class="section">
+            <h2>Подготовка</h2>
+            
+            <label for="prep">Подготовка / диета:</label>
+            <input type="text" id="prep" placeholder="Например: натощак, кишечник очищен">
+
+            <button id="toggleReferrerBtn" class="btn-secondary">Показать комментарий направления</button>
+            
+            <div id="referrerBlock" style="display: none;">
+                <label for="referrer">Комментарий врача-направителя:</label>
+                <input type="text" id="referrer" placeholder="Коротко суть направления">
+            </div>
+        </div>
+
+        <!-- Секция: Расчёт дозы -->
+        <div class="section">
+            <h2>Расчёт эффективной дозы (E)</h2>
+            
+            <label for="dlp">DLP (мГр·см):</label>
+            <input type="text" id="dlp" placeholder="Например: 800">
+            <p class="hint">Используйте точку или запятую для дробной части</p>
+
+            <label for="dlpRegion">Область для расчёта дозы:</label>
+            <select id="dlpRegion">
+                <option>Голова</option>
+                <option>Туловище</option>
+            </select>
+
+            <label for="dlpAge">Возрастная группа:</label>
+            <select id="dlpAge">
+                <option>>15 лет</option>
+                <option>15 лет</option>
+                <option>10 лет</option>
+                <option>5 лет</option>
+                <option>1 год</option>
+                <option>0-1 год</option>
+            </select>
+
+            <button id="calculateDoseBtn" class="btn-primary">Рассчитать дозу</button>
+            <p id="doseResult" class="dose-result"></p>
+        </div>
+
+        <!-- Секция: Итог -->
+        <div class="section">
+            <h2>Итоговый текст</h2>
+            
+            <button id="generateBtn" class="btn-primary btn-large">Сформировать текст</button>
+            
+            <label for="result">Результат:</label>
+            <textarea id="result" rows="10" readonly></textarea>
+            
+            <div class="button-row">
+                <button id="copyBtn" class="btn-success">Копировать</button>
+                <button id="clearBtn" class="btn-secondary">Очистить поля</button>
+            </div>
+        </div>
+
+        <!-- Статус бар -->
+        <div id="statusBar" class="status-bar"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

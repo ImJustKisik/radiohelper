@@ -1,0 +1,37 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Flask
+instance/
+.webassets-cache
+
+# Environment
+venv/
+env/
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Android
+.gradle/
+local.properties
+*.apk
+
+# Build
+build/
+dist/
+
+# JSON кэш приложения (локальный)
+# но guide.json в корне отслеживаем!
+mobile/android-app/app/src/main/res/raw/guide.json
